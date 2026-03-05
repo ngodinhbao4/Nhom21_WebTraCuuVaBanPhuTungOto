@@ -1,7 +1,5 @@
 package Nhom21.weboto.entity;
 
-import Nhom21.weboto.entity.OtpVerification;
-import Nhom21.weboto.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
