@@ -86,7 +86,7 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("Sai tên đăng nhập hoặc mật khẩu"));
 
         if (!user.getIsActive()) {
-            throw new RuntimeException("Tài khoản chưa được kích hoạt qua OTP.");
+            throw new RuntimeException("Tài khoản chưa được kích hoạt qua OTP hoặc đã bị vô hiệu hóa.");
         }
 
         if (passwordEncoder.matches(password, user.getPassword())) {
