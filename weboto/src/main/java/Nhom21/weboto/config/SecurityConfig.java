@@ -31,7 +31,8 @@ public class SecurityConfig {
                 // API công khai: Đăng ký, Đăng nhập, Tra cứu phụ tùng
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/api/v1/brands/**", "/api/v1/parts/**", "/api/v1/categories/**").permitAll()
-                
+                .requestMatchers("/api/v1/models/**").permitAll()
+
                 // API dành riêng cho Admin (Thống kê, Quản lý User)
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 
