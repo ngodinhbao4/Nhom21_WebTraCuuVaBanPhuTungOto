@@ -2,10 +2,12 @@ package Nhom21.weboto.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RevenueDTO {
-    private String period; // Ví dụ: "2026-03-05" hoặc "Tháng 03"
+    private String period;      // Ngày (YYYY-MM-DD) hoặc Tháng (YYYY-MM)
     private Double totalRevenue;
 }
