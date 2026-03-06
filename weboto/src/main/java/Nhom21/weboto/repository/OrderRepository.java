@@ -1,25 +1,25 @@
 package Nhom21.weboto.repository;
 
-import Nhom21.weboto.entity.Order; // Giả định thực thể Order đã tồn tại
-import Nhom21.weboto.dto.RevenueDTO;
+import Nhom21.weboto.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
-    // Thống kê doanh thu theo từng ngày trong tháng hiện tại
-    @Query("SELECT new Nhom21.weboto.dto.RevenueDTO(CAST(o.createdAt AS string), SUM(o.totalAmount)) " +
-           "FROM Order o WHERE o.status = 'COMPLETED' " +
-           "GROUP BY o.createdAt ORDER BY o.createdAt ASC")
-    List<RevenueDTO> getDailyRevenue();
+    // Thống kê theo ngày: Trả về danh sách mảng Object [ngày, tổng tiền]
+    @Query(value = "SELECT DATE_FORMAT(created_at, '%Y-%m-%d') as date, SUM(total_amount) " +
+                   "FROM orders WHERE status = 'COMPLETED' " +
+                   "GROUP BY DATE_FORMAT(created_at, '%Y-%m-%d') " +
+                   "ORDER BY date ASC", nativeQuery = true)
+    List<Object[]> getDailyRevenueNative();
 
-    // Thống kê doanh thu theo tháng trong năm hiện tại
-    @Query("SELECT new Nhom21.weboto.dto.RevenueDTO(SUBSTRING(CAST(o.createdAt AS string), 1, 7), SUM(o.totalAmount)) " +
-           "FROM Order o WHERE o.status = 'COMPLETED' " +
-           "GROUP BY SUBSTRING(CAST(o.createdAt AS string), 1, 7)")
-    List<RevenueDTO> getMonthlyRevenue();
+    // Thống kê theo tháng: Trả về danh sách mảng Object [tháng, tổng tiền]
+    @Query(value = "SELECT DATE_FORMAT(created_at, '%Y-%m') as month, SUM(total_amount) " +
+                   "FROM orders WHERE status = 'COMPLETED' " +
+                   "GROUP BY DATE_FORMAT(created_at, '%Y-%m') " +
+                   "ORDER BY month ASC", nativeQuery = true)
+    List<Object[]> getMonthlyRevenueNative();
 }
