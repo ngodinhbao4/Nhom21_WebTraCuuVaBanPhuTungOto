@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModelYearDTO {
+public class CategoryDTO {
     private Integer id;
-    private Integer yearNumber;
-    private Integer modelId;
+    private String name;
+    private String description;
 }

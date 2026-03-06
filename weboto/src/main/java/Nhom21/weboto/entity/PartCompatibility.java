@@ -5,21 +5,18 @@ import lombok.*;
 
 @Entity
 @Table(name = "part_compatibility")
+@IdClass(PartCompatibilityId.class) // Sử dụng PartCompatibilityId làm khóa chính
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class PartCompatibility {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
+    @Id // Đánh dấu là một phần của khóa chính
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "part_id", nullable = false)
-    private Part part; // Linh kiện nào?
+    @JoinColumn(name = "part_id")
+    private Part part;
 
+    @Id // Đánh dấu là một phần của khóa chính
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "model_year_id", nullable = false)
-    private ModelYear modelYear; // Lắp cho đời xe nào?
-
-    @Column(length = 255)
-    private String notes; // Ghi chú thêm (ví dụ: "Chỉ dành cho bản Turbo")
+    @JoinColumn(name = "model_year_id")
+    private ModelYear modelYear;
 }

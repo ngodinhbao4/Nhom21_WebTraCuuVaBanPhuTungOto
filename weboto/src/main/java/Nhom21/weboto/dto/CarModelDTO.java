@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class CarModelDTO {
     private Integer id;
     private String name;
+    private Integer brandId;
 }
