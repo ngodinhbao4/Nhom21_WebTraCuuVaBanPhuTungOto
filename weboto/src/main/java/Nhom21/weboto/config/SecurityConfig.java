@@ -4,6 +4,7 @@ import Nhom21.weboto.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,30 +23,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // 1. Vô hiệu hóa CSRF vì chúng ta dùng Stateless JWT
-            .csrf(csrf -> csrf.disable()) 
-            
-            // 2. Thiết lập chế độ Stateless (không lưu Session trên server)
+            .csrf(csrf -> csrf.disable()) // Vô hiệu hóa cho Stateless API
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
-            // 3. Cấu hình phân quyền API
             .authorizeHttpRequests(auth -> auth
-                // API công khai: Đăng ký, Đăng nhập, Tra cứu phụ tùng
+                // 1. NHÓM CÔNG KHAI (Ai cũng xem được để tra cứu phụ tùng)
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/v1/brands/**", "/api/v1/parts/**", "/api/v1/categories/**").permitAll()
-                .requestMatchers("/api/v1/models/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/brands/**", "/api/v1/models/**", "/api/v1/model-years/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/categories/**", "/api/v1/parts/**").permitAll()
+                .requestMatchers("/api/v1/auth/**", "/error").permitAll() // Thêm /error vào đây
 
-                // API dành riêng cho Admin (Thống kê, Quản lý User)
+                // 2. NHÓM QUẢN TRỊ (Chỉ Admin mới được thay đổi dữ liệu xe/phụ tùng)
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+
+                // 3. NHÓM MUA SẮM (Cần đăng nhập - User & Admin đều có giỏ hàng/đơn hàng riêng)
+                .requestMatchers("/api/v1/cart/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/api/v1/orders/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/api/v1/users/profile/**").hasAnyRole("USER", "ADMIN")
                 
-                // API dành cho User & Admin (Profile, Giỏ hàng, Đơn hàng)
-                .requestMatchers("/api/v1/users/**", "/api/v1/cart/**", "/api/v1/orders/**").hasAnyRole("USER", "ADMIN")
-                
-                // Các yêu cầu còn lại phải đăng nhập
+                // Các yêu cầu khác
                 .anyRequest().authenticated()
             );
 
-        // 4. THÊM QUAN TRỌNG: Chèn Filter kiểm tra JWT trước khi xử lý đăng nhập
+        // Thêm Filter kiểm tra JWT
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
             
         return http.build();

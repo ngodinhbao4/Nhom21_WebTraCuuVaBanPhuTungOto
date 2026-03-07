@@ -15,21 +15,18 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng: " + username));
+public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    // 1. Tìm user từ thực thể của bạn trong DB
+    User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng: " + username));
 
-        // Kiểm tra tài khoản đã kích hoạt chưa 
-        if (!user.getIsActive()) {
-            throw new RuntimeException("Tài khoản chưa được kích hoạt qua OTP");
-        }
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                user.getRoles().stream()
-                    .map(role -> new SimpleGrantedAuthority(role.getName())) // Ánh xạ quyền từ DB [cite: 92, 105]
-                    .collect(Collectors.toList())
-        );
+    // 2. Kiểm tra tài khoản đã kích hoạt chưa 
+    if (user.getIsActive() == null || !user.getIsActive()) {
+        throw new RuntimeException("Tài khoản chưa được kích hoạt qua OTP");
     }
+
+    // 3. QUAN TRỌNG: Trả về trực tiếp đối tượng user của bạn
+    // (Đảm bảo lớp Nhom21.weboto.entity.User đã implements UserDetails như mình hướng dẫn trước đó)
+    return user; 
+}
 }
