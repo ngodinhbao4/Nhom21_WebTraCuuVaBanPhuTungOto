@@ -1,6 +1,8 @@
 package Nhom21.weboto.repository;
 
 import Nhom21.weboto.entity.Order;
+import Nhom21.weboto.entity.User;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,4 +24,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
                    "GROUP BY DATE_FORMAT(created_at, '%Y-%m') " +
                    "ORDER BY month ASC", nativeQuery = true)
     List<Object[]> getMonthlyRevenueNative();
+
+    List<Order> findByUser(User user);
 }

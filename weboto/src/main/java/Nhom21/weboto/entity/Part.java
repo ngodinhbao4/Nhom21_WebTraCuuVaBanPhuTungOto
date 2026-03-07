@@ -1,5 +1,7 @@
 package Nhom21.weboto.entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +23,7 @@ public class Part {
     private String description; // Thông số kỹ thuật chi tiết 
 
     @Column(nullable = false)
-    private Double price; // Giá bán hiện tại [cite: 10, 17]
+    private BigDecimal price; // Giá bán hiện tại [cite: 10, 17]
 
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity; // Số lượng tồn kho 

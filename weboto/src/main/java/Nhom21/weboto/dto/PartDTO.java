@@ -1,5 +1,7 @@
 package Nhom21.weboto.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ public class PartDTO {
     private String name;
     private String sku;
     private String description;
-    private Double price;
+    private BigDecimal price;
     private Integer stockQuantity;
     private String imageUrl;
     private Integer categoryId;
